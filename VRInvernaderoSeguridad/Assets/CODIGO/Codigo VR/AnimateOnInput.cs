@@ -1,27 +1,41 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using UnityEngine.XR.Interaction.Toolkit;
 
-[System.Serializable]
-public class AnimationInput
+public class EquipmentSocket : MonoBehaviour
 {
-    public string animationPropertyName;
-    public InputActionProperty action;
-}
+    // Definimos qué tipo de socket es este
+    public enum TipoEquipo { Mascara, Traje, Guantes }
+    public TipoEquipo tipoDeSocket;
 
-public class AnimateOnInput : MonoBehaviour
-{
-    public List<AnimationInput> animationInputs;
-    public Animator animator;
+    private UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor socket;
 
-    // Update is called once per frame
-    void Update()
+    void Start()
     {
-        foreach (var item in animationInputs)
+        // Obtenemos el componente Socket automáticamente
+        socket = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor>();
+    }
+
+    // Esta función la conectaremos al evento "Select Entered" del Socket
+    public void OnObjetoEncajado(SelectEnterEventArgs args)
+    {
+        // 1. Avisar al SafetyManager qué nos pusimos
+        switch (tipoDeSocket)
         {
-            float actionValue = item.action.action.ReadValue<float>();
-            animator.SetFloat(item.animationPropertyName, actionValue);
+            case TipoEquipo.Mascara:
+                SafetyManager.Instance.RegistrarMascara();
+                break;
+            case TipoEquipo.Traje:
+                SafetyManager.Instance.RegistrarTraje();
+                break;
+            case TipoEquipo.Guantes:
+                SafetyManager.Instance.RegistrarGuantes();
+                break;
         }
+
+        // 2. Hacer "desaparecer" el objeto que encajamos (destruirlo)
+        // El objeto que entró está en args.interactableObject
+        GameObject objetoEntrante = args.interactableObject.transform.gameObject;
+
+        Destroy(objetoEntrante);
     }
 }
