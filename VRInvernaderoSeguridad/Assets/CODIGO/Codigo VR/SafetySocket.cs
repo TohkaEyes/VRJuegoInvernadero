@@ -17,17 +17,12 @@ public class SafetySocket : MonoBehaviour
 
     public void OnObjetoCapturado(SelectEnterEventArgs args)
     {
-        // Obtenemos el objeto que entró en el socket (la máscara/guante)
         GameObject objetoEntrante = args.interactableObject.transform.gameObject;
-
-        // --- VALIDACIÓN DE TAG ---
         if (tagRequerido != "Untagged" && !objetoEntrante.CompareTag(tagRequerido))
         {
             Debug.LogWarning("Este socket esperaba un objeto con tag: " + tagRequerido);
             return;
         }
-
-        // --- LÓGICA DE SEGURIDAD ---
         if (safetyManager != null)
         {
             switch (tipoDeEquipo)
@@ -48,14 +43,7 @@ public class SafetySocket : MonoBehaviour
         {
             Debug.LogError("¡Falta asignar el SafetyManager en el Inspector!");
         }
-
-        // --- LIMPIEZA FINAL ---
-
-        // 1. Eliminamos el objeto físico (el guante/máscara que tenías en la mano)
         Destroy(objetoEntrante);
-
-        // 2. NUEVO: Eliminamos este mismo Socket para que desaparezca de la escena
-        // "gameObject" (con g minúscula) se refiere al objeto donde está puesto este script
         Destroy(this.gameObject);
     }
 }

@@ -34,17 +34,13 @@ public class ProceduralVRAvatar : MonoBehaviour
 
     void Start()
     {
-        // Calcula offset inicial entre pelvis y HMD
         pelvisOffset = pelvis.position - headTarget.position;
     }
 
     void Update()
     {
-        // Mueve pelvis hacia posición de la cámara
         Vector3 targetPelvisPos = headTarget.position + pelvisOffset;
         pelvis.position = Vector3.Lerp(pelvis.position, targetPelvisPos, Time.deltaTime * bodySmooth);
-
-        // Rotación del torso
         Vector3 lookDir = headTarget.forward;
         lookDir.y = 0;
         if (lookDir.sqrMagnitude > 0.001f)
@@ -67,24 +63,17 @@ public class ProceduralVRAvatar : MonoBehaviour
         ApplyIKLeg(rightUpperLeg, rightLowerLeg, rightFoot);
     }
 
-    void ApplyIKArm(Transform upper, Transform lower, Transform handBone, Transform target)
-    {
-        // Simple IK de 2 huesos (UpperArm + LowerArm) hacia target
+    void ApplyIKArm(Transform upper, Transform lower, Transform handBone, Transform target){
         Vector3 upperToTarget = target.position - upper.position;
         Vector3 axis = Vector3.Cross((lower.position - upper.position).normalized, upperToTarget.normalized);
         Quaternion rot = Quaternion.LookRotation(upperToTarget, axis);
         upper.rotation = Quaternion.Slerp(upper.rotation, rot, Time.deltaTime * bodySmooth);
-
-        // Ajuste de codo simple
         lower.rotation = Quaternion.Slerp(lower.rotation, target.rotation, Time.deltaTime * bodySmooth);
-
-        // Mano
         handBone.rotation = Quaternion.Slerp(handBone.rotation, target.rotation, Time.deltaTime * bodySmooth);
     }
 
     void ApplyIKLeg(Transform upper, Transform lower, Transform foot)
     {
-        // Raycast al suelo
         Vector3 rayStart = foot.position + Vector3.up * 0.5f;
         if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit hit, footRayDistance + 0.5f, groundLayer))
         {

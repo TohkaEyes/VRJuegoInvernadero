@@ -13,7 +13,6 @@ public class Billboard : MonoBehaviour
     {
         if (camaraPrincipal != null)
         {
-            // Hacemos que el objeto mire hacia la cámara
             transform.LookAt(transform.position + camaraPrincipal.transform.forward);
         }
     }

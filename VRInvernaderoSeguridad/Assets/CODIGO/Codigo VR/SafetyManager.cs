@@ -2,14 +2,13 @@ using UnityEngine;
 
 public class SafetyManager : MonoBehaviour
 {
-    // Singleton para poder llamarlo desde cualquier lado facilmente
     public static SafetyManager Instance;
 
     [Header("Modelos del Personaje")]
-    public GameObject modeloCivil;       // Tu modelo actual (Ropa normal)
-    public GameObject modeloProtegido;   // Tu modelo con el traje completo
-    public GameObject modeloMano1;   // Tu modelo con el traje completo
-    public GameObject modeloMano2;   // Tu modelo con el traje completo
+    public GameObject modeloCivil;
+    public GameObject modeloProtegido;
+    public GameObject modeloMano1;
+    public GameObject modeloMano2;
     [Header("Estado del Equipo")]
     public bool tieneMascara = false;
     public bool tieneTraje = false;
@@ -18,10 +17,8 @@ public class SafetyManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        ActualizarPersonaje(); // Asegurar que empezamos bien
+        ActualizarPersonaje();
     }
-
-    // Funciones para registrar cada pieza
     public void RegistrarMascara()
     {
         tieneMascara = true;
@@ -45,7 +42,6 @@ public class SafetyManager : MonoBehaviour
 
     private void VerificarSetCompleto()
     {
-        // Si tenemos las 3 cosas, cambiamos el modelo
         if (tieneMascara && tieneTraje && tieneGuantes)
         {
             modeloCivil.SetActive(false);
@@ -55,8 +51,6 @@ public class SafetyManager : MonoBehaviour
             Debug.Log("¡EQUIPO COMPLETO! Cambiando modelo.");
         }
     }
-
-    // Por si necesitas reiniciar en pruebas
     public void ActualizarPersonaje()
     {
         modeloCivil.SetActive(true);

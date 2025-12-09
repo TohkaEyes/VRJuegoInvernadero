@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR;
-using UnityEngine.SceneManagement; // <--- NECESARIO PARA REINICIAR
-using System.Collections; // <--- NECESARIO PARA EL TEMPORIZADOR
+using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class SymptomSystem : MonoBehaviour
 {
@@ -12,7 +12,7 @@ public class SymptomSystem : MonoBehaviour
     public AudioSource audioTos;
 
     private float intensidadMareo = 0f;
-    private bool reiniciando = false; // Para que no se reinicie 50 veces por segundo
+    private bool reiniciando = false;
 
     void Update()
     {
@@ -20,9 +20,7 @@ public class SymptomSystem : MonoBehaviour
 
         float salud = PlayerHealth.Instance.vidaActual;
 
-        // --- LÓGICA DE SÍNTOMAS (Igual que antes) ---
-
-        // 1. MAREO (Vida < 80)
+        //MAREO (Vida < 80)
         if (salud < 80 && salud > 0)
         {
             intensidadMareo = (80 - salud) * 0.05f;
@@ -33,7 +31,7 @@ public class SymptomSystem : MonoBehaviour
                 cameraOffset.transform.localRotation = Quaternion.Euler(x * intensidadMareo, y * intensidadMareo, 0);
         }
 
-        // 2. TEMBLORES (Vida < 60)
+        //TEMBLORES (Vida < 60)
         if (salud < 60 && salud > 0)
         {
             float fuerza = (60 - salud) / 60f;
@@ -42,7 +40,7 @@ public class SymptomSystem : MonoBehaviour
             VibrarHardware(XRNode.RightHand, fuerza, 0.1f);
         }
 
-        // 3. TOS (Vida < 40)
+        //TOS (Vida < 40)
         if (salud < 40 && salud > 0)
         {
             if (audioTos != null && !audioTos.isPlaying && Random.value < 0.01f)
@@ -51,7 +49,7 @@ public class SymptomSystem : MonoBehaviour
             }
         }
 
-        // 4. VISIÓN NEGRA / COMA (Vida < 20)
+        //VISIÓN NEGRA / COMA (Vida < 20)
         if (panelComa != null)
         {
             float alpha = 0;
@@ -62,7 +60,7 @@ public class SymptomSystem : MonoBehaviour
             panelComa.color = c;
         }
 
-        // --- NUEVO: REINICIO AL MORIR ---
+        //REINICIO
         if (salud <= 0 && !reiniciando)
         {
             reiniciando = true; // Bloqueamos para que solo pase una vez
@@ -70,15 +68,10 @@ public class SymptomSystem : MonoBehaviour
         }
     }
 
-    // Corrutina: Espera un momento y recarga
     IEnumerator ReiniciarSimulacion()
     {
         Debug.Log("¡COMA! Reiniciando en 3 segundos...");
-
-        // Esperamos 3 segundos con la pantalla negra
         yield return new WaitForSeconds(3f);
-
-        // Obtenemos el nombre de la escena actual y la cargamos de nuevo
         string escenaActual = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(escenaActual);
     }

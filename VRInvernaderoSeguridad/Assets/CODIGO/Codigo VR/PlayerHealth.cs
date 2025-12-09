@@ -1,14 +1,14 @@
 using UnityEngine;
-using UnityEngine.UI; // Necesario para la UI
+using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
-    public static PlayerHealth Instance; // Singleton para acceso fácil
+    public static PlayerHealth Instance;
 
     [Header("Configuración")]
     public float vidaMaxima = 100f;
     public float vidaActual;
-    public Slider barraDeVida; // Arrastra tu Slider aquí
+    public Slider barraDeVida;
 
     private void Awake()
     {
@@ -25,7 +25,7 @@ public class PlayerHealth : MonoBehaviour
         ActualizarBarra();
     }
 
-    public void Curar() // Por si quieres reiniciar
+    public void Curar()
     {
         vidaActual = vidaMaxima;
         ActualizarBarra();
@@ -35,7 +35,7 @@ public class PlayerHealth : MonoBehaviour
     {
         if (barraDeVida != null)
         {
-            barraDeVida.value = vidaActual / vidaMaxima; // Normalizamos a 0-1
+            barraDeVida.value = vidaActual / vidaMaxima;
         }
     }
 }
